@@ -22,23 +22,7 @@ See [termbox.h](https://github.com/nsf/termbox/blob/master/src/termbox.h) for no
 
 ### Example
 
-```crystal
-w = Termbox::Window.new
-
-w.set_output_mode(Termbox::OUTPUT_256)
-w.set_primary_colors(89, 207)
-w.clear()
-
-(0..10).each do |i|
-  w.put(3 + i, 5, 48 + i, 69, 238)
-end
-
-w.cursor(3, 3)
-
-w.render()
-sleep(5)
-w.shutdown()
-```
+See `examples/simple.cr` for basic usage.
 
 ## Contributing
 
