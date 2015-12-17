@@ -5,9 +5,23 @@ module Termbox
     @@exists = false
 
     def initialize
+      init()
+    end
+
+    private def init
       raise "Only one Window can be instantiated at once" if @@exists
+
       @@exists = true
-      TermboxBindings.tb_init()
+
+      error = TermboxBindings.tb_init()
+
+      if error == E_UNSUPPORTED_TERMINAL
+        raise "Terminal is unsupported."
+      elsif error == E_FAILED_TO_OPEN_TTY
+        raise "Failed to open terminal."
+      elsif error == E_PIPE_TRAP_ERROR
+        raise "Pipe trap error."
+      end
     end
 
     def finalize
