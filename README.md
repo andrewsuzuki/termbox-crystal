@@ -12,15 +12,17 @@ dependencies:
     github: andrewsuzuki/termbox-crystal
 ```
 
+Don't have termbox-c? Just run `./install-termbox.sh`, it will clone termbox into lib-termbox and symlink it to within /usr/local/lib. Or check out the [termbox](https://github.com/nsf/termbox) project page for more information.
+
 ## Usage
 
 ```crystal
 require "termbox"
 ```
 
-See [termbox.h](https://github.com/nsf/termbox/blob/master/src/termbox.h) for now.
+See [termbox.h](https://github.com/nsf/termbox/blob/master/src/termbox.h) and examples for now.
 
-### Example
+### Examples
 
 See `examples/simple.cr` for basic usage.
 

@@ -1,4 +1,4 @@
-@[Link(ldflags: "termbox/build/src/libtermbox.a")]
+@[Link(ldflags: "-L/usr/local/lib -ltermbox")]
 lib TermboxBindings
   alias Char = LibC::Char
   alias Int = LibC::Int
