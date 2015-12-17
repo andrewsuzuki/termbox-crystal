@@ -6,7 +6,7 @@
 git clone https://github.com/nsf/termbox lib-termbox
 
 # cd to it
-cd "ext/nsf/termbox"
+cd "lib-termbox"
 
 # Configure and build
 ./waf configure --prefix=/usr/local
