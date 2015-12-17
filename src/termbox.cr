@@ -1,14 +1,6 @@
 require "./termbox/*"
 
 module Termbox
-  alias Char = LibC::Char
-  alias Int = LibC::Int
-  alias UInt = LibC::UInt
-  alias Long = LibC::Long
-  alias ULong = LibC::ULong
-  alias SizeT = LibC::SizeT
-  alias Double = LibC::Double
-
   class Window
     @@exists = false
 
@@ -52,7 +44,7 @@ module Termbox
     end
 
     def put(x : Int, y : Int, ch : Int, fg : Int, bg : Int) : Void
-      TermboxBindings.tb_change_cell(x, y, ch.to_u32, fg.to_u16, bg.to_u16)
+      TermboxBindings.tb_change_cell(x, y, ch, fg, bg)
     end
 
     def set_input_mode(mode : Int) : Int
@@ -64,7 +56,7 @@ module Termbox
     end
 
     def set_primary_colors(frontground : Int, background : Int) : Void
-      TermboxBindings.tb_set_clear_attributes(frontground.to_u16, background.to_u16)
+      TermboxBindings.tb_set_clear_attributes(frontground, background)
     end
   end
 
