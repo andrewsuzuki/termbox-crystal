@@ -1,10 +1,26 @@
 require "./termbox/*"
 
 module Termbox
+  class Cell
+    getter x, y, foreground, background
+
+    def initialize(@x : Int, @y : Int, @foreground : Int, @background : Int)
+    end
+    def initialize(@x : Int, @y : Int)
+      @foreground = 0
+      @background = 0
+    end
+  end
+
   class Window
     @@exists = false
 
+    # Helpers
+    include TermboxHelpers
+
     def initialize
+      @frontground = COLOR_WHITE
+      @background = COLOR_BLACK
       init()
     end
 
@@ -53,12 +69,20 @@ module Termbox
       TermboxBindings.tb_set_cursor(x, y)
     end
 
+    def cursor(cell : Cell) : Void
+      cursor(cell.x, cell.y)
+    end
+
     def hide_cursor : Void
       cursor(HIDE_CURSOR, HIDE_CURSOR)
     end
 
-    def put(x : Int, y : Int, ch : Int, fg : Int, bg : Int) : Void
-      TermboxBindings.tb_change_cell(x, y, ch, fg, bg)
+    def put(x : Int, y : Int, ch : Int, frontground : Int, background : Int) : Void
+      TermboxBindings.tb_change_cell(x, y, ch, frontground, background)
+    end
+
+    def put(x : Int, y : Int, ch : Char, frontground : Int, background : Int) : Void
+      put(x, y, ch.ord, frontground, background)
     end
 
     def set_input_mode(mode : Int) : Int
@@ -70,6 +94,8 @@ module Termbox
     end
 
     def set_primary_colors(frontground : Int, background : Int) : Void
+      @frontground = frontground
+      @background = background
       TermboxBindings.tb_set_clear_attributes(frontground, background)
     end
   end

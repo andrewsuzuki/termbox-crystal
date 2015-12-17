@@ -5,8 +5,8 @@ w = Termbox::Window.new
 
 # Use 256 color mode
 w.set_output_mode(Termbox::OUTPUT_256)
-# Use yellow foreground, pink background
-w.set_primary_colors(226, 207)
+# Use red foreground, periwinkle background
+w.set_primary_colors(196, 189)
 # Reset things
 w.clear()
 
@@ -15,6 +15,12 @@ w.clear()
 (0..9).each do |i|
   w.put(3 + i, 5, 48 + i, 69, 238)
 end
+
+startat = Termbox::Cell.new(1, 1)
+w.write_line(startat, "this is a test of write line!")
+
+startat2 = Termbox::Cell.new(w.width - "this goes off the".size, w.height - 1)
+w.write_line(startat2, "this goes off the page")
 
 # Place the cursor at 3, 3
 w.cursor(3, 3)
