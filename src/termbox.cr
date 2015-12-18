@@ -1,25 +1,37 @@
 require "./termbox/*"
 
 module Termbox
-  class Cell
-    getter x, y, foreground, background
+  struct Position
+    getter x, y
 
-    def initialize(@x : Int, @y : Int, @foreground : Int, @background : Int)
-    end
     def initialize(@x : Int, @y : Int)
-      @foreground = 0
-      @background = 0
+    end
+
+    def new_inc_x(x : Int)
+      Position.new(@x + x, @y)
+    end
+
+    def new_inc_y(y : Int)
+      Position.new(@x, @y + y)
+    end
+  end
+
+  struct Cell
+    getter position, char, foreground, background
+
+    def initialize(@char : Char, @position : Position, @foreground : Int, @background : Int)
+    end
+
+    def initialize(char : Char, position : Position)
+      initialize(char, position, COLOR_NIL, COLOR_NIL)
     end
   end
 
   class Window
     @@exists = false
 
-    # Helpers
-    include TermboxHelpers
-
     def initialize
-      @frontground = COLOR_WHITE
+      @foreground = COLOR_WHITE
       @background = COLOR_BLACK
       init()
     end
@@ -65,24 +77,34 @@ module Termbox
       TermboxBindings.tb_present()
     end
 
-    def cursor(x : Int, y : Int) : Void
-      TermboxBindings.tb_set_cursor(x, y)
-    end
-
-    def cursor(cell : Cell) : Void
-      cursor(cell.x, cell.y)
+    def cursor(position : Position) : Void
+      cursor(position.x, position.y)
     end
 
     def hide_cursor : Void
       cursor(HIDE_CURSOR, HIDE_CURSOR)
     end
 
-    def put(x : Int, y : Int, ch : Int, frontground : Int, background : Int) : Void
-      TermboxBindings.tb_change_cell(x, y, ch, frontground, background)
+    def put(cell : Cell) : Void
+      # Correct "nil" colors
+      foreground = cell.foreground != COLOR_NIL ? cell.foreground : @foreground
+      background = cell.background != COLOR_NIL ? cell.background : @background
+      put(cell.position.x, cell.position.y, cell.char.ord, foreground, background)
     end
 
-    def put(x : Int, y : Int, ch : Char, frontground : Int, background : Int) : Void
-      put(x, y, ch.ord, frontground, background)
+    def put(position : Position, char : Char, foreground, background) : Void
+      # Correct "nil" colors
+      foreground = foreground != COLOR_NIL ? foreground : @foreground
+      background = background != COLOR_NIL ? background : @background
+      put(position.x, position.y, char.ord, foreground, background)
+    end
+
+    def put(position : Position, char : Char)
+      put(position, char, COLOR_NIL, COLOR_NIL)
+    end
+
+    def clear_cell(position : Position) : Void
+      put(position, CHAR_BLANK, @foreground, @background)
     end
 
     def set_input_mode(mode : Int) : Int
@@ -93,10 +115,121 @@ module Termbox
       TermboxBindings.tb_select_output_mode(mode)
     end
 
-    def set_primary_colors(frontground : Int, background : Int) : Void
-      @frontground = frontground
+    def set_primary_colors(foreground : Int, background : Int) : Void
+      @foreground = foreground
       @background = background
-      TermboxBindings.tb_set_clear_attributes(frontground, background)
+      TermboxBindings.tb_set_clear_attributes(foreground, background)
+    end
+
+    private def cursor(x : Int, y : Int) : Void
+      TermboxBindings.tb_set_cursor(x, y)
+    end
+
+    private def put(x : Int, y : Int, ch : Int, foreground : Int, background : Int) : Void
+      TermboxBindings.tb_change_cell(x, y, ch, foreground, background)
+    end
+
+    # Helpers
+
+    def write_string(position : Termbox::Position, string : String)
+      string.each_char_with_index do |char, i|
+        put(position.new_inc_x(i), char)
+      end
+    end
+  end
+
+  struct Box
+    getter cell, width, height
+
+    # Specify mode
+    def initialize(cell : Termbox::Cell, width : Int, height : Int, mode : String)
+      case mode
+      when "solid"
+        char = '█'
+      when "cloth_low"
+        char = '░'
+      when "cloth_med"
+        char = '▒'
+      when "cloth_high"
+        char = '▓'
+      when "dotted"
+        char = '·'
+      else
+        char = 'X'
+      end
+
+      initialize(cell, width, height, mode == "double" ? "double" : "char", char)
+    end
+
+    # Single-char-based box
+    def initialize(cell : Termbox::Cell, width : Int, height : Int, char : Char)
+      initialize(cell, width, height, "char", char)
+    end
+
+    # Normal box
+    def initialize(cell : Termbox::Cell, width : Int, height : Int)
+      initialize(cell, width, height, "normal")
+    end
+
+    # Internal constructor
+    private def initialize(@cell : Termbox::Cell, @width : Int, @height : Int, @mode : String, @char : Char)
+      unless ["normal", "double", "char"].includes? @mode
+        @mode = "normal"
+      end
+    end
+
+    def draw(window : Termbox::Window)
+      fg = @cell.foreground
+      bg = @cell.foreground
+      # Draw four lines
+      cell_top = Cell.new(symbol("top"), @cell.position.new_inc_x(1), fg, bg)
+      cell_bottom = Cell.new(symbol("bottom"), @cell.position.new_inc_x(1).new_inc_y(@height - 1), fg, bg)
+      cell_left = Cell.new(symbol("left"), @cell.position.new_inc_y(1), fg, bg)
+      cell_right = Cell.new(symbol("right"), @cell.position.new_inc_y(1).new_inc_x(@width - 1), fg, bg)
+      Line.new(cell_top, @width - 2, false).draw(window)
+      Line.new(cell_bottom, @width - 2, false).draw(window)
+      Line.new(cell_left, @height - 2, true).draw(window)
+      Line.new(cell_right, @height - 2, true).draw(window)
+      # Draw corner pieces
+      window.put(Cell.new(symbol("topleft"), @cell.position, fg, bg))
+      window.put(Cell.new(symbol("topright"), @cell.position.new_inc_x(@width - 1), fg, bg))
+      window.put(Cell.new(symbol("bottomleft"), @cell.position.new_inc_y(@height - 1), fg, bg))
+      window.put(Cell.new(symbol("bottomright"), @cell.position.new_inc_y(@height - 1).new_inc_x(@width - 1), fg, bg))
+    end
+
+    private def symbol(position : String) : Char
+      if @mode == "char"
+        return @char
+      else
+        case position
+        when "top", "bottom"
+          return @mode == "normal" ? '─' : '═'
+        when "left", "right"
+          return @mode == "normal" ? '│' : '║'
+        when "topleft"
+          return @mode == "normal" ? '┌' : '╔'
+        when "topright"
+          return @mode == "normal" ? '┐' : '╗'
+        when "bottomleft"
+          return @mode == "normal" ? '└' : '╚'
+        when "bottomright"
+          return @mode == "normal" ? '┘' : '╝'
+        end
+      end
+      '!'
+    end
+  end
+
+  class Line
+    getter cell, size, is_vertical
+
+    def initialize(@cell : Cell, @size : Int, @is_vertical = true : Bool)
+    end
+
+    def draw(window : Window)
+      (0..(@size - 1)).each do |i|
+        window.put(@is_vertical ? @cell.position.new_inc_y(i) : @cell.position.new_inc_x(i), @cell.char)
+      end
     end
   end
 
@@ -181,6 +314,7 @@ module Termbox
   MOD_ALT = 0x01
 
   # Colors
+  COLOR_NIL     = -1
   COLOR_DEFAULT = 0x00
   COLOR_BLACK   = 0x01
   COLOR_RED     = 0x02
@@ -222,4 +356,5 @@ module Termbox
   # Misc
   HIDE_CURSOR = -1
   EOF         = -1
+  CHAR_BLANK  = ' '
 end
