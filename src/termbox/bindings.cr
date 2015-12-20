@@ -27,13 +27,13 @@ lib TermboxBindings
   end
 
   # API
-  fun tb_init: Int
-  fun tb_shutdown: Void
-  fun tb_width: Int
-  fun tb_height: Int
-  fun tb_clear: Void
+  fun tb_init(): Int
+  fun tb_shutdown(): Void
+  fun tb_width(): Int
+  fun tb_height(): Int
+  fun tb_clear(): Void
   fun tb_set_clear_attributes(fg: UInt16, bg: UInt16): Void
-  fun tb_present: Void
+  fun tb_present(): Void
   fun tb_set_cursor(x: Int, y: Int): Void
   fun tb_put_cell(x: Int, y: Int, cell: Pointer(Cell)): Void
   fun tb_change_cell(x: Int, y: Int, ch: UInt32, fg: UInt16, bg: UInt16): Void
