@@ -1,43 +1,47 @@
 require "../src/termbox"
 
+include Termbox
+
 # Instantiate new termbox window
-w = Termbox::Window.new
+w = Window.new
 
 # Use 256 color mode
-w.set_output_mode(Termbox::OUTPUT_256)
+w.set_output_mode(OUTPUT_256)
 # Use red foreground, periwinkle background
 w.set_primary_colors(196, 189)
 # Reset things
 w.clear()
 
-# Write 0 - 9 on the 5th row, 3rd column
-(0..9).each do |i|
-  w.put(Termbox::Cell.new(i.to_s.char_at(0), Termbox::Position.new(5 + i, 5), 56, 190))
-end
+# Write a string
+w.write_string(Position.new(3, 3), "this is a test of write line")
 
-w.write_string(Termbox::Position.new(3, 3), "this is a test of write line")
-
-startat2 = Termbox::Position.new(w.width - "this goes off the".size, w.height - 1)
+# Write a string that goes "off the screen"
+startat2 = Position.new(w.width - "this goes off the".size, w.height - 1)
 w.write_string(startat2, "this goes off the page")
 
 # Place the cursor at 3, 3
-w.cursor(Termbox::Position.new(3, 3))
+w.cursor(Position.new(3, 3))
 
 # Draw vertical line on left margin
-Termbox::Line.new(Termbox::Cell.new('|', Termbox::Position.new(1, 1)), 15, true).draw(w)
+w.put(Line.new(Cell.new('|', Position.new(1, 1)), 15, true))
 
 # Draw box
-Termbox::Box.new(Termbox::Cell.new('-', Termbox::Position.new(4, 4)), 15, 6).draw(w)
+w.put(Border.new(Position.new(4, 4), 15, 6, '-'))
 
 # Draw double box
-Termbox::Box.new(Termbox::Cell.new('-', Termbox::Position.new(20, 4)), 15, 6, "double").draw(w)
+w.put(Border.new(Position.new(20, 4), 15, 6, "double"))
 
 # Draw dotted box with solid box over it
-Termbox::Box.new(Termbox::Cell.new('-', Termbox::Position.new(36, 4)), 15, 6, "dotted").draw(w)
-Termbox::Box.new(Termbox::Cell.new('-', Termbox::Position.new(38, 5)), 15, 6, "solid").draw(w)
+w.put(Border.new(Position.new(36, 4), 15, 6, "dotted"))
+w.put(Border.new(Position.new(38, 5), 15, 6, "solid"))
 
-# Draw custom box (at signs)
-Termbox::Box.new(Termbox::Cell.new('-', Termbox::Position.new(54, 4)), 15, 6, '@').draw(w)
+# Draw custom border (at-signs) on the border of a container
+
+contain = Container.new(Position.new(54, 4), 15, 6)
+  contain.put(Border.new(contain, '@'))
+  contain.put(Cell.new('A', Position.new(2, 2), 231, 82))
+  w.put(contain)
+
 
 # Render the screen
 w.render()
@@ -45,10 +49,13 @@ w.render()
 # So we can see things for a bit
 sleep(1)
 
+
 # Write 0 - 9 again on 6th row, clearing 5th row as we go
 (0..9).each do |i|
-  w.put(Termbox::Cell.new(i.to_s.char_at(0), Termbox::Position.new(5 + i, 6), 56, 190))
-  w.clear_cell(Termbox::Position.new(5 + i, 5))
+  w.put(Cell.new(i.to_s.char_at(0), Position.new(5 + i, 6), 56, 190))
+  w.clear_cell(Position.new(5 + i, 5))
+  # Put cursor after this cell
+  w.cursor(Position.new(6 + i, 6))
   sleep(0.1)
   w.render()
 end
