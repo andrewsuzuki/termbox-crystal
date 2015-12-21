@@ -6,6 +6,9 @@ module Termbox
 
     def initialize
       init_termbox()
+
+      @event_master = TermboxBindings::Event.new type: 0, mod: 0, key: 0, ch: 0, w: 0, x: 0, y: 0
+
       @foreground = COLOR_WHITE
       @background = COLOR_BLACK
       super(Position.new(0, 0), 0, 0)
@@ -134,15 +137,34 @@ module Termbox
       TermboxBindings.tb_set_cursor(position.x, position.y)
     end
 
+    # Events
+
+    def peek(timeout : Int)
+      e = @event_master
+      TermboxBindings.tb_peek_event(pointerof(e), timeout)
+      e
+    end
+
+    def poll
+      e = @event_master
+      TermboxBindings.tb_poll_event(pointerof(e))
+      e
+    end
+
     # Helpers
 
     # Write a string horizontal starting at pivot
     def write_string(pivot : Position, string : String)
-      string.each_char_with_index do |char, i|
-        put_raw(pivot.new_transform(i, 0), char)
-      end
+      write_string(pivot, string, COLOR_NIL, COLOR_NIL)
     end
 
+    # Write a string horizontal starting at pivot
+    def write_string(pivot : Position, string : String, foreground : Int, background : Int)
+      string.each_char_with_index do |char, i|
+        put_raw(pivot.new_transform(i, 0), char, foreground, background)
+      end
+    end
+    
     # Decide on foreground (if nil, use default)
     private def decide_foreground(color : Int)
       color != COLOR_NIL ? color : @foreground

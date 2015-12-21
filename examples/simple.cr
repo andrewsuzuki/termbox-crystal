@@ -42,13 +42,11 @@ contain = Container.new(Position.new(54, 4), 15, 6)
   contain.put(Cell.new('A', Position.new(2, 2), 231, 82))
   w.put(contain)
 
-
 # Render the screen
 w.render()
 
 # So we can see things for a bit
 sleep(1)
-
 
 # Write 0 - 9 again on 6th row, clearing 5th row as we go
 (0..9).each do |i|
