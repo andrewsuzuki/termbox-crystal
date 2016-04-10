@@ -4,7 +4,7 @@ module Termbox
   class Line < Termbox::Element
     getter :cell, :size, :is_vertical
 
-    def initialize(@cell : Cell, @size : Int, @is_vertical = true : Bool)
+    def initialize(@cell : Cell, @size : Int, @is_vertical : Bool = true)
     end
 
     def render : Array(Cell)
