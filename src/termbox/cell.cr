@@ -6,7 +6,7 @@ module Termbox
     getter :position, :char, :foreground, :background
 
     # Make a cell with a specified foreground and background
-    def initialize(@char : Char, @position : Position, @foreground : Int, @background : Int)
+    def initialize(@char : Char, @position : Position, @foreground : Int32, @background : Int32)
     end
 
     # Make a cell with default colors
@@ -15,7 +15,7 @@ module Termbox
     end
 
     # Make a new cell with a position transformed by x and y
-    def new_transform(x : Int, y : Int)
+    def new_transform(x : Int32, y : Int32)
       Cell.new(@char, @position.new_transform(x, y), @foreground, @background)
     end
 

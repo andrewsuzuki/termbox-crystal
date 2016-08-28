@@ -41,12 +41,12 @@ module Termbox
     end
 
     # Get width of termbox
-    def width : Int
+    def width : Int32
       TermboxBindings.tb_width()
     end
 
     # Get height of termbox
-    def height : Int
+    def height : Int32
       TermboxBindings.tb_height()
     end
 
@@ -106,7 +106,7 @@ module Termbox
     end
 
     # Put a decomposed cell and decomposed position, bypassing @elements store
-    private def put_raw(x : Int, y : Int, ch : Int, foreground : Int, background : Int) : Void
+    private def put_raw(x : Int32, y : Int32, ch : Int32, foreground : Int32, background : Int32) : Void
       TermboxBindings.tb_change_cell(x, y, ch, foreground, background)
     end
 
@@ -116,17 +116,17 @@ module Termbox
     end
 
     # Set input mode
-    def set_input_mode(mode : Int) : Int
+    def set_input_mode(mode : Int32) : Int32
       TermboxBindings.tb_select_input_mode(mode)
     end
 
     # Set output mode
-    def set_output_mode(mode : Int) : Int
+    def set_output_mode(mode : Int32) : Int32
       TermboxBindings.tb_select_output_mode(mode)
     end
 
     # Set primary colors
-    def set_primary_colors(foreground : Int, background : Int) : Void
+    def set_primary_colors(foreground : Int32, background : Int32) : Void
       @foreground = foreground
       @background = background
       TermboxBindings.tb_set_clear_attributes(foreground, background)
@@ -139,7 +139,7 @@ module Termbox
 
     # Events
 
-    def peek(timeout : Int)
+    def peek(timeout : Int32)
       e = @event_master
       TermboxBindings.tb_peek_event(pointerof(e), timeout)
       e
@@ -159,19 +159,19 @@ module Termbox
     end
 
     # Write a string horizontal starting at pivot
-    def write_string(pivot : Position, string : String, foreground : Int, background : Int)
+    def write_string(pivot : Position, string : String, foreground : Int32, background : Int32)
       string.each_char_with_index do |char, i|
         put_raw(pivot.new_transform(i, 0), char, foreground, background)
       end
     end
     
     # Decide on foreground (if nil, use default)
-    private def decide_foreground(color : Int)
+    private def decide_foreground(color : Int32)
       color != COLOR_NIL ? color : @foreground
     end
 
     # Decide on background (if nil, use default)
-    private def decide_background(color : Int)
+    private def decide_background(color : Int32)
       color != COLOR_NIL ? color : @background
     end
   end
