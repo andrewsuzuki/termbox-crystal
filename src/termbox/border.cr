@@ -18,7 +18,7 @@ module Termbox
     end
 
     # For special-mode borders (normal, double, solid, cloth_low, cloth_med, cloth_high, dotted)
-    def initialize(pivot : Position, width : Int, height : Int, mode : String)
+    def initialize(pivot : Position, width : Int32, height : Int32, mode : String)
       # Decide on border character given mode
       # For normal/double/char modes, just use X (no use)
       case mode
@@ -40,17 +40,17 @@ module Termbox
     end
 
     # Normal mode
-    def initialize(pivot : Position, width : Int, height : Int)
+    def initialize(pivot : Position, width : Int32, height : Int32)
       initialize(pivot, width, height, "normal")
     end
 
     # Border based on a single character
-    def initialize(pivot : Position, width : Int, height : Int, char : Char)
+    def initialize(pivot : Position, width : Int32, height : Int32, char : Char)
       initialize(pivot, width, height, "char", char)
     end
 
     # Master internal constructor
-    private def initialize(@pivot : Position, @width : Int, @height : Int, @mode : String, @char : Char)
+    private def initialize(@pivot : Position, @width : Int32, @height : Int32, @mode : String, @char : Char)
       @foreground = COLOR_NIL
       @background = COLOR_NIL
     end

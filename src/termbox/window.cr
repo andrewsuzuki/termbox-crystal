@@ -106,7 +106,7 @@ module Termbox
     end
 
     # Put a decomposed cell and decomposed position, bypassing @elements store
-    private def put_raw(x : Int, y : Int, ch : Int, foreground : Int, background : Int) : Void
+    private def put_raw(x : Int, y : Int, ch : Int, foreground : UInt16, background : UInt16) : Void
       TermboxBindings.tb_change_cell(x, y, ch, foreground, background)
     end
 
@@ -126,7 +126,7 @@ module Termbox
     end
 
     # Set primary colors
-    def set_primary_colors(foreground : Int, background : Int) : Void
+    def set_primary_colors(foreground : UInt16, background : UInt16) : Void
       @foreground = foreground
       @background = background
       TermboxBindings.tb_set_clear_attributes(foreground, background)

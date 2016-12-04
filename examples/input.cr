@@ -11,7 +11,7 @@ w.set_input_mode(INPUT_ESC | INPUT_MOUSE)
 # Use 256 color mode
 w.set_output_mode(OUTPUT_256)
 # Use red foreground, periwinkle background
-w.set_primary_colors(196, 189)
+w.set_primary_colors(196_u16, 189_u16)
 # Reset things
 w.clear()
 
