@@ -3,10 +3,10 @@ module Termbox
   struct Position
     getter :x, :y
 
-    def initialize(@x : Int, @y : Int)
+    def initialize(@x : Int32, @y : Int32)
     end
 
-    def new_transform(x : Int, y : Int)
+    def new_transform(x : Int32, y : Int32)
       Position.new(@x + x, @y + y)
     end
   end

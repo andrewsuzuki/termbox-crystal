@@ -27,18 +27,18 @@ lib TermboxBindings
   end
 
   # API
-  fun tb_init(): Int
+  fun tb_init(): Int32
   fun tb_shutdown(): Void
-  fun tb_width(): Int
-  fun tb_height(): Int
+  fun tb_width(): Int32
+  fun tb_height(): Int32
   fun tb_clear(): Void
   fun tb_set_clear_attributes(fg: UInt16, bg: UInt16): Void
   fun tb_present(): Void
-  fun tb_set_cursor(x: Int, y: Int): Void
-  fun tb_put_cell(x: Int, y: Int, cell: Pointer(Cell)): Void
-  fun tb_change_cell(x: Int, y: Int, ch: UInt32, fg: UInt16, bg: UInt16): Void
-  fun tb_select_input_mode(mode: Int): Int
-  fun tb_select_output_mode(mode: Int): Int
-  fun tb_peek_event(event: Pointer(Event), timeout: Int): Int
-  fun tb_poll_event(event: Pointer(Event)): Int
+  fun tb_set_cursor(x: Int32, y: Int32): Void
+  fun tb_put_cell(x: Int32, y: Int32, cell: Pointer(Cell)): Void
+  fun tb_change_cell(x: Int32, y: Int32, ch: UInt32, fg: UInt16, bg: UInt16): Void
+  fun tb_select_input_mode(mode: Int32): Int32
+  fun tb_select_output_mode(mode: Int32): Int32
+  fun tb_peek_event(event: Pointer(Event), timeout: Int32): Int32
+  fun tb_poll_event(event: Pointer(Event)): Int32
 end
