@@ -7,7 +7,7 @@ module Termbox
     getter :elements
 
     # Accepts a pivot (top left position), width, and height
-    def initialize(@pivot : Position, @width : Int, @height : Int)
+    def initialize(@pivot : Position, @width : Int32, @height : Int32)
       @elements = [] of Element
     end
 

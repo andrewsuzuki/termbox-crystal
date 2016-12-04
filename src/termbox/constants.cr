@@ -80,16 +80,16 @@ module Termbox
   MOD_ALT = 0x01
 
   # Colors
-  COLOR_NIL     = -1
-  COLOR_DEFAULT = 0x00
-  COLOR_BLACK   = 0x01
-  COLOR_RED     = 0x02
-  COLOR_GREEN   = 0x03
-  COLOR_YELLOW  = 0x04
-  COLOR_BLUE    = 0x05
-  COLOR_MAGENTA = 0x06
-  COLOR_CYAN    = 0x07
-  COLOR_WHITE   = 0x08
+  COLOR_NIL     = 0xffff_u16
+  COLOR_DEFAULT = 0x00_u16
+  COLOR_BLACK   = 0x01_u16
+  COLOR_RED     = 0x02_u16
+  COLOR_GREEN   = 0x03_u16
+  COLOR_YELLOW  = 0x04_u16
+  COLOR_BLUE    = 0x05_u16
+  COLOR_MAGENTA = 0x06_u16
+  COLOR_CYAN    = 0x07_u16
+  COLOR_WHITE   = 0x08_u16
 
   # Attributes
   ATTR_BOLD      = 0x0100

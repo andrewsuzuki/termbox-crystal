@@ -8,7 +8,7 @@ w = Window.new
 # Use 256 color mode
 w.set_output_mode(OUTPUT_256)
 # Use red foreground, periwinkle background
-w.set_primary_colors(196, 189)
+w.set_primary_colors(196_u16, 189_u16)
 # Reset things
 w.clear()
 
@@ -39,7 +39,7 @@ w << Border.new(Position.new(38, 5), 15, 6, "solid")
 
 contain = Container.new(Position.new(54, 4), 15, 6)
   contain << Border.new(contain, '@')
-  contain << Cell.new('A', Position.new(2, 2), 231, 82)
+  contain << Cell.new('A', Position.new(2, 2), 231_u16, 82_u16)
   w << contain
 
 # Render the screen
@@ -50,7 +50,7 @@ sleep(1)
 
 # Write 0 - 9 again on 6th row, clearing 5th row as we go
 (0..9).each do |i|
-  w << Cell.new(i.to_s.char_at(0), Position.new(5 + i, 6), 56, 190)
+  w << Cell.new(i.to_s.char_at(0), Position.new(5 + i, 6), 56_u16, 190_u16)
   w.clear_cell(Position.new(5 + i, 5))
   # Put cursor after this cell
   w.cursor(Position.new(6 + i, 6))
