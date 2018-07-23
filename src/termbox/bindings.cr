@@ -22,6 +22,7 @@ lib TermboxBindings
     key: UInt16
     ch: UInt32
     w: Int32
+    h: Int32
     x: Int32
     y: Int32
   end
