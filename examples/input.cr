@@ -19,13 +19,13 @@ w.render()
 
 loop do
   ev = w.poll()
-  if ev.type == Termbox::EVENT_KEY
+  if ev.is_a? Termbox::Event::Key
     if [Termbox::KEY_CTRL_C, Termbox::KEY_CTRL_D].includes? ev.key
       break
     end
-  elsif ev.type == 2
+  elsif ev.is_a? Termbox::Event::Resize
     w.write_string(Position.new(3, 3), "resize!!")
-  elsif ev.type == 3
+  elsif ev.is_a? Termbox::Event::Mouse
     w.write_string(Position.new(3, 4), "mouse!!", COLOR_MAGENTA - 1, COLOR_CYAN - 1)
   end
   w.render()

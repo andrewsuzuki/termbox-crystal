@@ -142,13 +142,13 @@ module Termbox
     def peek(timeout : Int32)
       e = @event_master
       r = TermboxBindings.tb_peek_event(pointerof(e), timeout)
-      e if r > 0
+      Event.new(e) if r > 0
     end
 
     def poll
       e = @event_master
       TermboxBindings.tb_poll_event(pointerof(e))
-      e
+      Event.new(e)
     end
 
     # Helpers
